@@ -79,7 +79,8 @@ defmodule Hangman.Impl.Game do
   end
 
   #########################################################################
-  defp tally(game) do
+  @spec tally(Game.t) :: Type.tally
+  def tally(game) do
     %{
       turns_left: game.turns_left,
       game_state: game.game_state,
