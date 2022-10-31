@@ -1,24 +1,11 @@
 defmodule Test do
-  @moduledoc """
-  Documentation for `Test`.
-  """
 
-  @doc """
-  Hello world.
-
-  ## Examples
-
-      iex> Test.hello()
-      :world
-
-  """
-  def hello do
-    :world
+  def greeter(what_to_say) do
+    receive do
+      msg ->
+        IO.puts("#{what_to_say} : #{inspect msg}")
+    end
+    greeter(what_to_say)
   end
-
-  def swap({a,b}), do: {b,a}
-
-  def check_same(a,a), do: true
-  def check_same(_,_), do: false
 
 end
