@@ -2,6 +2,8 @@ defmodule Hangman.Runtime.Server do
 
   alias Hangman.Impl.Game
 
+  @type t :: pid
+
   use GenServer
 
   ### client process
@@ -20,7 +22,7 @@ defmodule Hangman.Runtime.Server do
     {:reply, tally, updated_game}
   end
 
-  def handle_call ({:tally}, _from, game) do
+  def handle_call({:tally}, _from, game) do
     { :reply, Game.tally(game), game}
   end
 
