@@ -1,13 +1,13 @@
 defmodule TextClient.Impl.Player do
-  @typep game :: Hangman.game()
+  @typep game_pid :: Hangman.game()
   @typep tally :: Hangman.tally()
-  @typep state :: {game, tally}
+  @typep state :: {game_pid, tally}
 
   @spec start() :: :ok
   def start() do
-    game = Hangman.new_game()
-    tally = Hangman.tally(game)
-    interact({game, tally})
+    game_pid = Hangman.new_game()
+    tally = Hangman.tally(game_pid)
+    interact({game_pid, tally})
   end
 
   #########################################################
@@ -24,7 +24,7 @@ defmodule TextClient.Impl.Player do
     )
   end
 
-  def interact({game, _tally = %{game_state: :lost}}) do
+  def interact({_game_pid, tally = %{game_state: :lost}}) do
     IO.puts(
       IO.ANSI.red_background <>
       IO.ANSI.bright() <>
@@ -33,24 +33,23 @@ defmodule TextClient.Impl.Player do
       IO.ANSI.reset() <>
       "  The word was: " <>
       IO.ANSI.cyan() <>
-      "#{game.letters |> Enum.join()}" <>
+      "#{tally.letters |> Enum.join()}" <>
       IO.ANSI.reset()
       )
   end
 
-  def interact({game, tally}) do
+  def interact({game_pid, tally}) do
     IO.puts(feedback_for(tally))
     IO.puts(current_word(tally))
 
-    Hangman.make_move(game, get_guess())
-    |> interact()
+    interact({ game_pid, Hangman.make_move(game_pid, get_guess()) })
   end
 
   #########################################################
 
   # idk why I made it slightly piratey
   def feedback_for(tally = %{game_state: :initializing}) do
-    "Guess the word if ya can. Here be a clue, cit be " <>
+    "Guess the word if ya can. Here be a clue, it be " <>
       IO.ANSI.green() <>
       "#{tally.letters |> length} letters in length." <>
       IO.ANSI.reset()
